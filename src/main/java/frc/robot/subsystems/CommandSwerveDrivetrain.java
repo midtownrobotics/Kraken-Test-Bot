@@ -91,7 +91,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public void configureDefaultCommand(CommandXboxController driverController) {
         setDefaultCommand( // Drivetrain will execute this command periodically
-            applyRequest(() -> driveRobotCentric.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with
+            applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with
                                                                                             // negative Y (forward)
                 .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                 .withRotationalRate(driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
