@@ -9,7 +9,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,17 +49,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
-        super(driveTrainConstants, OdometryUpdateFrequency, modules);
-        if (Utils.isSimulation()) {
-            startSimThread();
-        }
-    }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        // registerTelemetry((state) -> {
+        //    state.
+        // });
+    } 
+
+    public Pose2d getPose() {
+        if (getState().Pose == null){
+            return new Pose2d();
+        }
+        return getState().Pose;
     }
 
     public void resetHeading() {
@@ -97,6 +104,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 .withRotationalRate(driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+    }
+
+    public void driveChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        drive.withVelocityX(chassisSpeeds.vxMetersPerSecond);
+        drive.withVelocityY(chassisSpeeds.vyMetersPerSecond);
+        drive.withRotationalRate(chassisSpeeds.omegaRadiansPerSecond);
+
+        this.setControl(m_requestToApply);
     }
 
     @Override

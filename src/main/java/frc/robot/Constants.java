@@ -16,4 +16,9 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class AutoConstants {
+    public static final double KPX_CONTROLLER = 0;
+    public static final double KPY_CONTROLLER = 0;
+  }
 }
