@@ -119,6 +119,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         this.setControl(m_requestToApply);
     }
 
+    public void driveChassisSpeedsRobotCentric(ChassisSpeeds chassisSpeeds) {
+        driveRobotCentric.withVelocityX(chassisSpeeds.vxMetersPerSecond);
+        driveRobotCentric.withVelocityY(chassisSpeeds.vyMetersPerSecond);
+        driveRobotCentric.withRotationalRate(chassisSpeeds.omegaRadiansPerSecond);
+
+        desiredChassisSpeeds = chassisSpeeds;
+
+        this.setControl(m_requestToApply);
+    }
+
     public ChassisSpeeds getChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(m_moduleStates);
     }

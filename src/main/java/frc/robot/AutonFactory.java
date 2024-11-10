@@ -29,7 +29,7 @@ public class AutonFactory {
                                                                                     // output: m/s).
             thetaController, // PID constants to correct for rotation
 
-            (ChassisSpeeds speeds) -> drivetrain.driveChassisSpeeds(speeds),
+            (ChassisSpeeds speeds) -> drivetrain.driveChassisSpeedsRobotCentric(speeds),
 
             () -> {return true;}, // Whether or not to mirror the path based on alliance (this assumes the path is created for the blue alliance)
 
