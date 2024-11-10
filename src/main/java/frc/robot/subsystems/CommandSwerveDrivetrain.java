@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -12,6 +14,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +34,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    private ChassisSpeeds desiredChassisSpeeds = new ChassisSpeeds();
 
     private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
     private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
@@ -71,10 +77,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         this.seedFieldRelative();
     }
 
-    public void setX() {
-        // TODO: Merge in set X
-    }
-
     public void setBoost(boolean boost) {}
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -111,7 +113,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         drive.withVelocityY(chassisSpeeds.vyMetersPerSecond);
         drive.withRotationalRate(chassisSpeeds.omegaRadiansPerSecond);
 
+        desiredChassisSpeeds = chassisSpeeds;
+
         this.setControl(m_requestToApply);
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return m_kinematics.toChassisSpeeds(m_moduleStates);
     }
 
     @Override
@@ -129,6 +137,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 hasAppliedOperatorPerspective = true;
             });
         }
+
+        Logger.recordOutput("Drivetrain/Pose2d", getPose());
+        Logger.recordOutput("Drivetrain/ChassisSpeeds", getChassisSpeeds());
+        Logger.recordOutput("Drivetrain/DesiredChassisSpeeds", desiredChassisSpeeds);
 
         SmartDashboard.putNumber("FL-CanCoder", super.getModule(0).getCANcoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("FR-CanCoder", super.getModule(1).getCANcoder().getAbsolutePosition().getValueAsDouble());        
