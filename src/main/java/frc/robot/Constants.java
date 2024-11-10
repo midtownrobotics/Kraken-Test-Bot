@@ -20,5 +20,6 @@ public final class Constants {
   public static class AutoConstants {
     public static final double KPX_CONTROLLER = 0;
     public static final double KPY_CONTROLLER = 0;
+    public static final double KPTHETA_CONTROLLER = 0;
   }
 }
