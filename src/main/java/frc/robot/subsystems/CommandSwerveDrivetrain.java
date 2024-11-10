@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -122,6 +123,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_kinematics.toChassisSpeeds(m_moduleStates);
     }
 
+    public SwerveModuleState[] getSwerveModuleStates() {
+        return m_moduleStates;
+    }
+
     @Override
     public void periodic() {
         /* Periodically try to apply the operator perspective */
@@ -141,6 +146,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         Logger.recordOutput("Drivetrain/Pose2d", getPose());
         Logger.recordOutput("Drivetrain/ChassisSpeeds", getChassisSpeeds());
         Logger.recordOutput("Drivetrain/DesiredChassisSpeeds", desiredChassisSpeeds);
+        Logger.recordOutput("Drivetrain/ModuleStates", getSwerveModuleStates());
+
+        //    ƪ(˘⌣˘)ʃ  
 
         SmartDashboard.putNumber("FL-CanCoder", super.getModule(0).getCANcoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("FR-CanCoder", super.getModule(1).getCANcoder().getAbsolutePosition().getValueAsDouble());        
