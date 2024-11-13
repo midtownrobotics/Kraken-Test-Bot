@@ -5,11 +5,14 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveDrivetrain;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,7 +34,7 @@ import frc.robot.generated.TunerConstants;
  * Class that extends the Phoenix SwerveDrivetrain class and implements
  * subsystem so it can be used in command-based projects easily.
  */
-public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -48,11 +51,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedOperatorPerspective = false;
 
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    private final LegacySwerveRequest.FieldCentric drive = new LegacySwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
-    private final SwerveRequest.RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+    private final LegacySwerveRequest.RobotCentric driveRobotCentric = new LegacySwerveRequest.RobotCentric()
     .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
@@ -69,6 +72,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public Pose2d getPose() {
         if (getState().Pose == null){
+            
             return new Pose2d();
         }
         return getState().Pose;
@@ -80,7 +84,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public void setBoost(boolean boost) {}
 
-    public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
+    public Command applyRequest(Supplier<LegacySwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
